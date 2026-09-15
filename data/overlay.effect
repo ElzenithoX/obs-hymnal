@@ -1,0 +1,54 @@
+/*
+ * Anti-aliased rounded rectangle with independent corner radii, used for the
+ * Hymnal Display overlay panels and their drop shadow.
+ *
+ * The sprite is drawn `margin` pixels larger than `size` on every side; the
+ * signed distance is measured against the `size` rectangle centred inside it,
+ * so a positive `softness` feathers the edge outward (shadow) while a value
+ * under one pixel gives a crisp anti-aliased edge (panel).
+ */
+
+uniform float4x4 ViewProj;
+uniform float4 color;
+uniform float2 size;
+uniform float4 radii;    /* top-left, top-right, bottom-right, bottom-left */
+uniform float margin;
+uniform float softness;
+
+struct VertInOut {
+	float4 pos : POSITION;
+	float2 uv : TEXCOORD0;
+};
+
+VertInOut VSDefault(VertInOut vert_in)
+{
+	VertInOut vert_out;
+	vert_out.pos = mul(float4(vert_in.pos.xyz, 1.0), ViewProj);
+	vert_out.uv = vert_in.uv;
+	return vert_out;
+}
+
+float rounded_box(float2 p, float2 half_size, float4 r)
+{
+	float rad = (p.x > 0.0) ? ((p.y > 0.0) ? r.z : r.y) : ((p.y > 0.0) ? r.w : r.x);
+	float2 q = abs(p) - half_size + rad;
+	return min(max(q.x, q.y), 0.0) + length(max(q, 0.0)) - rad;
+}
+
+float4 PSRoundedRect(VertInOut vert_in) : TARGET
+{
+	float2 full = size + margin * 2.0;
+	float2 p = vert_in.uv * full - full * 0.5;
+	float d = rounded_box(p, size * 0.5, radii);
+	float alpha = 1.0 - smoothstep(-softness, softness, d);
+	return float4(color.rgb, color.a * alpha);
+}
+
+technique Draw
+{
+	pass
+	{
+		vertex_shader = VSDefault(vert_in);
+		pixel_shader = PSRoundedRect(vert_in);
+	}
+}

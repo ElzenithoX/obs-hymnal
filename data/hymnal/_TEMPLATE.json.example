@@ -1,0 +1,10 @@
+{
+  "number": 0,
+  "title": "Hymn Title",
+  "author": "Author Name",
+  "verses": [
+    "First verse text.\nUse \\n for line breaks within a verse.",
+    "Second verse text."
+  ],
+  "chorus": "Optional chorus/refrain text shown via its own button. Leave as an empty string if this hymn has no chorus."
+}
