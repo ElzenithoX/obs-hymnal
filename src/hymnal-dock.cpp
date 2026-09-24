@@ -89,6 +89,13 @@ std::string CreateDefaultHymnalFolder()
 		if (!entry.is_regular_file())
 			continue;
 
+		// Only seed real hymn files and the template. A build or editing
+		// tool that leaves something else in the data folder should not
+		// end up littering every new user's library with it.
+		std::string extension = entry.path().extension().string();
+		if (extension != ".json" && extension != ".example")
+			continue;
+
 		std::filesystem::path destination = std::filesystem::path(target) / entry.path().filename();
 		std::error_code copyError;
 		std::filesystem::copy_file(entry.path(), destination, std::filesystem::copy_options::skip_existing,
