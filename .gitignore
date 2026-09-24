@@ -22,6 +22,11 @@
 # Exclude editor/backup copies that end up in the sample hymn folder
 *.bak
 
+# Keep the shipped samples public domain worldwide. "Great Is Thy Faithfulness"
+# (Chisholm, 1923) is public domain in the US but still under copyright in
+# life+70 countries until ~2031, so it stays a local hymn rather than a sample.
+/data/hymnal/019-great-is-thy-faithfulness.json
+
 # Exclude macOS legacy resource forks
 .DS_Store
 
