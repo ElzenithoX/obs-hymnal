@@ -61,9 +61,11 @@ Grab the `.pkg` (macOS) or `.deb` (Ubuntu 24.04) from
 1. Add a **Hymnal Display** source to your scene and position it where you want
    the lower third. Pick a theme under *Design Overlay* in its Properties, or
    untick the group for plain text.
-2. Open **Docks → Hymnal Browser**. Click **Browse…** and choose a folder for
-   your hymns. A few public-domain examples ship in
-   [`data/hymnal`](data/hymnal) to get you started — copy them in.
+2. Open **Docks → Hymnal Browser**. On first run it creates a hymn library for
+   you and fills it with the sample hymns in [`data/hymnal`](data/hymnal), so
+   there is something to click straight away. The folder is shown at the top of
+   the dock; use **Browse…** to point at a different one (a shared drive, for
+   instance) at any time.
 3. Select a hymn. Verse 1 goes on screen immediately; use **Next / Previous /
    Chorus** to move through it and **Clear** to blank the display.
 4. **Send To** lets you target every Hymnal Display source at once or a specific
@@ -72,6 +74,20 @@ Grab the `.pkg` (macOS) or `.deb` (Ubuntu 24.04) from
 If the dock ever ends up floating, drag its title bar onto any edge of the OBS
 window, or press the **Dock into OBS** button that appears at the top of the
 panel while it is undocked.
+
+### Where hymns are stored
+
+The default library lives beside OBS's own settings, so it survives plugin
+updates and needs no special permissions:
+
+| Platform | Location |
+|----------|----------|
+| Windows  | `%APPDATA%\obs-studio\plugin_config\obs-hymnal\hymnal\` |
+| macOS    | `~/Library/Application Support/obs-studio/plugin_config/obs-hymnal/hymnal/` |
+| Linux    | `~/.config/obs-studio/plugin_config/obs-hymnal/hymnal/` |
+
+Back it up by copying the folder. To share a library across machines or
+operators, put it on a synced/shared drive and point **Browse…** at it.
 
 ### Hymn file format
 

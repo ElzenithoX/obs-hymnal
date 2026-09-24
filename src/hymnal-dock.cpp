@@ -27,6 +27,7 @@
 
 #include "hymnal-net-client.hpp"
 
+#include <filesystem>
 #include <fstream>
 #include <sstream>
 #include <cstring>
@@ -57,6 +58,48 @@ std::string ConfigFilePath()
 	std::string p = path ? path : "";
 	bfree(path);
 	return p;
+}
+
+// Picks the folder a first-time user starts with and fills it from the sample
+// hymns bundled in the plugin's data directory, so the dock has something to
+// show the moment it is installed. The library lives in the config directory
+// rather than the install directory so it stays writable, survives plugin
+// updates, and is not lost when the plugin is uninstalled.
+std::string CreateDefaultHymnalFolder()
+{
+	char *configPath = obs_module_config_path("hymnal");
+	std::string target = configPath ? configPath : "";
+	bfree(configPath);
+
+	if (target.empty())
+		return target;
+
+	std::error_code ec;
+	std::filesystem::create_directories(target, ec);
+	if (ec) {
+		obs_log(LOG_WARNING, "Hymnal: could not create '%s': %s", target.c_str(), ec.message().c_str());
+		return std::string();
+	}
+
+	char *bundledPath = obs_module_file("hymnal");
+	if (!bundledPath)
+		return target;
+
+	for (const auto &entry : std::filesystem::directory_iterator(bundledPath, ec)) {
+		if (!entry.is_regular_file())
+			continue;
+
+		std::filesystem::path destination = std::filesystem::path(target) / entry.path().filename();
+		std::error_code copyError;
+		std::filesystem::copy_file(entry.path(), destination, std::filesystem::copy_options::skip_existing,
+					   copyError);
+		if (copyError)
+			obs_log(LOG_WARNING, "Hymnal: could not copy sample hymn '%s': %s",
+				entry.path().filename().string().c_str(), copyError.message().c_str());
+	}
+
+	bfree(bundledPath);
+	return target;
 }
 
 bool CollectHymnalSourceNames(void *param, obs_source_t *source)
@@ -325,6 +368,11 @@ HymnalDock::HymnalDock(QWidget *parent) : QWidget(parent)
 	connect(searchOnlineButton, &QPushButton::clicked, this, &HymnalDock::OnSearchOnline);
 
 	LoadConfig();
+	if (hymnalFolder.empty()) {
+		hymnalFolder = CreateDefaultHymnalFolder();
+		if (!hymnalFolder.empty())
+			SaveConfig();
+	}
 	if (!hymnalFolder.empty()) {
 		folderEdit->setText(QString::fromStdString(hymnalFolder));
 		ReloadHymnal();
