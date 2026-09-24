@@ -8,6 +8,8 @@ rounded panel, drop shadow, and a reference box that reads `HYMN 137 / VERSE 4`.
 Built for church livestreams, but it works for any lyric or responsive-reading
 display.
 
+![A hymn verse on screen in the Rose theme, with the reference box reading HYMN 1 / VERSE 1](docs/overlay.png)
+
 ## Features
 
 - **Hymnal Browser dock** — searchable hymn list, Previous / Next / Chorus /
@@ -57,6 +59,8 @@ Grab the `.pkg` (macOS) or `.deb` (Ubuntu 24.04) from
 [Releases](../../releases) and install it like any other OBS plugin package.
 
 ## Using it
+
+![The Hymnal Browser dock on the right of the OBS window, driving the verse on the program output](docs/screenshot.png)
 
 1. Add a **Hymnal Display** source to your scene and position it where you want
    the lower third. Pick a theme under *Design Overlay* in its Properties, or
