@@ -577,6 +577,22 @@ void HymnalDock::ApplyFilter()
 		}
 	}
 
+	// An empty list on its own looks like something is broken, so say which
+	// kind of empty it is and what to do about it.
+	if (filteredIndices.empty()) {
+		QString message;
+		if (hymnalFolder.empty())
+			message = QStringLiteral("No hymnal folder selected — click Browse…");
+		else if (hymns.empty())
+			message = QStringLiteral("No hymns in this folder yet.\n"
+						 "Use Add Hymn… or Search Online… to add one.");
+		else
+			message = QStringLiteral("No hymn matches “%1”.").arg(searchEdit->text().trimmed());
+
+		auto *placeholder = new QListWidgetItem(message, hymnList);
+		placeholder->setFlags(Qt::NoItemFlags);
+	}
+
 	hymnList->blockSignals(false);
 
 	// Re-select the currently active hymn in the filtered list if present.

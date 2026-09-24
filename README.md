@@ -50,8 +50,24 @@ display.
 4. Start OBS. **Hymnal Browser** appears under the *Docks* menu, and
    **Hymnal Display** under *Add Source*.
 
+The exact path matters. If Explorer's "extract here" leaves you with
+`…\plugins\obs-hymnal-0.1.0-windows-x64\obs-hymnal\…`, OBS will not find it —
+the `obs-hymnal` folder has to sit directly inside `plugins`.
+
+**Running OBS in portable mode?** Portable installs deliberately ignore
+`ProgramData`. Put the files in the OBS folder itself instead: `bin\64bit\obs-hymnal.dll`
+goes in `obs-plugins\64bit\`, and the contents of `data\` go in
+`data\obs-plugins\obs-hymnal\`.
+
 To update, close OBS and replace the `obs-hymnal` folder with the new one. Your
 hymn folder and settings live elsewhere and are untouched.
+
+### Verifying it loaded
+
+If the dock does not appear, open *Help → Log Files → View Current Log* and
+search for `hymnal`. A successful load logs
+`[obs-hymnal] plugin loaded successfully`. No mention of it at all means the
+files are in the wrong place.
 
 ### macOS / Linux
 
